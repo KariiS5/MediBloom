@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff7fb">
+<title>MediBloom</title>
+<style>
+:root{
+  --ink:#4c4053; --muted:#897b90; --line:#efe6f1; --paper:#fffafd;
+  --pink:#f7ddea; --pink2:#fdeff6; --lav:#e9ddff; --blue:#deedff; --mint:#dff3e7;
+  --shadow:0 18px 48px rgba(91,72,105,.12); --soft-shadow:0 10px 28px rgba(91,72,105,.08);
+  font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color:var(--ink); background:var(--paper);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:
+ radial-gradient(circle at 12% 0%,#ffe7f2 0,transparent 33%),
+ radial-gradient(circle at 95% 6%,#e9e2ff 0,transparent 35%),
+ linear-gradient(180deg,#fffafd 0%,#f8fbff 100%);}
+body{min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{width:min(720px,100%);margin:0 auto;padding:18px 16px calc(34px + env(safe-area-inset-bottom));}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 2px 18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,#ffdce9,#e8ddff);box-shadow:var(--soft-shadow);font-size:1.35rem}
+h1{margin:0;font-size:clamp(1.65rem,6vw,2.2rem);letter-spacing:-.03em}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.92rem}
+.iconbtn{border:0;width:46px;height:46px;border-radius:16px;background:rgba(255,255,255,.78);box-shadow:var(--soft-shadow);font-size:1.45rem;display:grid;place-items:center}
+.section-label{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#9a8ca1;margin:2px 2px 8px}
+.select-wrap{position:relative}
+select{appearance:none;width:100%;border:1px solid var(--line);background:rgba(255,255,255,.88);border-radius:18px;padding:15px 46px 15px 16px;outline:none;box-shadow:0 8px 24px rgba(93,74,107,.05);font-weight:700}
+.select-wrap:after{content:"⌄";position:absolute;right:17px;top:50%;transform:translateY(-55%);pointer-events:none;color:#97899f;font-size:1.2rem}
+.study-card{margin:18px 0 13px;min-height:330px;border:1px solid rgba(239,230,241,.95);border-radius:32px;padding:28px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:rgba(255,255,255,.82);backdrop-filter:blur(8px);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.study-card:before,.study-card:after{content:"";position:absolute;border-radius:999px;filter:blur(1px);opacity:.6}
+.study-card:before{width:170px;height:170px;background:#fde8f2;top:-85px;left:-65px}
+.study-card:after{width:160px;height:160px;background:#e9e4ff;right:-72px;bottom:-85px}
+.card-content{position:relative;z-index:1;width:100%}
+.mode-chip{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#f7f2fa;color:#8f8097;font-size:.75rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.drug{margin:30px 0 12px;font-size:clamp(2.15rem,9vw,4.2rem);line-height:1.05;letter-spacing:-.045em;overflow-wrap:anywhere}
+.hint{margin:0 auto;max-width:480px;color:var(--muted);font-size:1rem;line-height:1.5}
+.ratings{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.rating{border:0;border-radius:18px;padding:14px 10px;font-weight:800;box-shadow:0 8px 20px rgba(80,65,91,.07);transition:transform .08s ease,filter .12s ease}
+.rating:active,.primary:active,.soft:active,.iconbtn:active{transform:scale(.985)}
+.rating.often{background:var(--lav)} .rating.normal{background:var(--blue)} .rating.rarely{background:var(--mint)}
+.primary{width:100%;border:0;border-radius:20px;padding:16px 18px;background:linear-gradient(135deg,#f9dce9,#eedfff);font-weight:900;font-size:1.05rem;box-shadow:0 12px 28px rgba(120,91,126,.12)}
+.stats{text-align:center;color:#978a9f;font-size:.86rem;margin:13px 0 0}
+.empty-actions{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.soft{border:0;border-radius:16px;padding:12px 15px;background:#efe8ff;font-weight:800}
+.note{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:18px;padding:12px 14px;color:#807288;font-size:.88rem;line-height:1.45;margin-top:14px}
+.hidden{display:none!important}
+/* manager */
+dialog{border:0;padding:0;background:transparent;width:min(680px,calc(100% - 18px));max-width:680px;max-height:92vh}
+dialog::backdrop{background:rgba(60,48,66,.35);backdrop-filter:blur(2px)}
+.sheet{background:#fffafd;border-radius:28px;padding:20px;box-shadow:0 30px 80px rgba(56,43,65,.22);max-height:92vh;overflow:auto}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}
+.sheet h2{margin:0;font-size:1.35rem}.sheet p{color:var(--muted);line-height:1.45}
+.close{border:0;background:#f2ebf6;width:40px;height:40px;border-radius:14px;font-size:1.35rem}
+.form-grid{display:grid;gap:12px}
+label{display:grid;gap:7px;font-size:.88rem;font-weight:800;color:#6f6177}
+input{width:100%;border:1px solid var(--line);border-radius:15px;padding:13px 14px;background:#fff;outline:none}
+input:focus,select:focus{border-color:#d8c8e6;box-shadow:0 0 0 4px rgba(225,211,239,.35)}
+.divider{height:1px;background:var(--line);margin:4px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.filebox{position:relative;overflow:hidden}.filebox input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.status{min-height:20px;font-size:.88rem;font-weight:800;color:#7a687f}
+.library-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.library-head strong{font-size:.95rem}.count-pill{background:#f1ebf7;padding:5px 9px;border-radius:999px;font-size:.78rem;color:#84758d}
+.library{display:grid;gap:8px;max-height:250px;overflow:auto;padding-right:2px}
+.item{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:15px;padding:11px 12px}
+.item .name{font-weight:800}.item small{display:block;color:#988aa0;margin-top:2px}.tag{font-size:.72rem;background:#f7f1fa;border-radius:999px;padding:5px 8px;white-space:nowrap;color:#8a7a92}
+.tiny{font-size:.8rem!important;margin:0!important}
+@media(max-width:520px){
+  .app{padding-left:14px;padding-right:14px}.study-card{min-height:300px;padding:24px 16px;border-radius:28px}
+  .ratings{grid-template-columns:1fr}.rating{padding:13px}.row{grid-template-columns:1fr}
+  .sub{font-size:.86rem}.logo{width:43px;height:43px;border-radius:15px}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">✿</div>
+      <div><h1>MediBloom</h1><p class="sub">A softer way to review medications</p></div>
+    </div>
+    <button class="iconbtn" id="manageBtn" aria-label="Open medication library">＋</button>
+  </header>
+
+  <div class="section-label">Review collection</div>
+  <div class="select-wrap"><select id="categorySelect"><option value="__all__">All medications · category hidden</option></select></div>
+
+  <section class="study-card">
+    <div class="card-content">
+      <div class="mode-chip" id="contextLabel">✦ ALL MEDICATIONS</div>
+      <h2 class="drug" id="drugName">Ready when you are</h2>
+      <p class="hint" id="hint">Add your medications, then tap randomize. In All Medications mode, you will only see the name — no category hints.</p>
+      <div class="empty-actions" id="emptyActions"><button class="soft" id="emptyAdd">＋ Add medications</button></div>
+    </div>
+  </section>
+
+  <section class="ratings hidden" id="ratings">
+    <button class="rating often" data-rating="often">Review often</button>
+    <button class="rating normal" data-rating="normal">Review normally</button>
+    <button class="rating rarely" data-rating="rarely">Review rarely</button>
+  </section>
+
+  <button class="primary" id="nextBtn">✦ Randomize medication</button>
+  <div class="stats" id="stats">0 medications · 0 categories</div>
+  <div class="note">Your ratings change how likely a medication is to return. Recent names also get a short cooldown so the same drug does not keep appearing back-to-back.</div>
+</main>
+
+<dialog id="manageDialog">
+  <div class="sheet">
+    <div class="sheet-head"><h2>Medication library</h2><button class="close" id="closeDialog" aria-label="Close">×</button></div>
+    <p>Add one medication or import a whole lesson. Duplicate names are skipped automatically, and existing review progress is kept.</p>
+    <div class="form-grid">
+      <label>Medication name<input id="singleName" placeholder="e.g. Metoprolol" autocomplete="off"></label>
+      <label>Lesson / category<input id="singleCategory" placeholder="e.g. Beta blockers" autocomplete="off"></label>
+      <button type="button" class="soft" id="addSingle">Add medication</button>
+      <div class="divider"></div>
+      <label>Category for this import<input id="importCategory" placeholder="e.g. Antidepressants" autocomplete="off"></label>
+      <label class="soft filebox">Import TXT or CSV · adds automatically<input id="importFile" type="file" accept=".txt,.csv,text/plain,text/csv"></label>
+      <p class="tiny">TXT: one medication per line. CSV: a column named <b>name</b>, <b>medication</b>, or <b>drug</b>. An optional <b>category</b> column is supported.</p>
+      <div class="row">
+        <button type="button" class="soft" id="exportBtn">Export backup</button>
+        <label class="soft filebox">Restore backup<input id="restoreFile" type="file" accept=".json,application/json"></label>
+      </div>
+      <div class="status" id="manageStatus"></div>
+      <div class="library-head"><strong>Your medications</strong><span class="count-pill" id="libCount">0</span></div>
+      <div class="library" id="library"></div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const KEY='medibloom_v2';
+let db=load(); let current=null; let recent=[];
+const $=id=>document.getElementById(id);
+function load(){try{let x=JSON.parse(localStorage.getItem(KEY));return x&&Array.isArray(x.meds)?x:{meds:[]}}catch(e){return{meds:[]}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){} render()}
+function norm(s){return String(s||'').trim().replace(/\s+/g,' ').toLocaleLowerCase()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function id(){return (crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2)}
+function addMed(name,category='Uncategorized'){
+  name=String(name||'').trim().replace(/\s+/g,' '); category=String(category||'Uncategorized').trim()||'Uncategorized';
+  if(!name||db.meds.some(m=>norm(m.name)===norm(name))) return false;
+  db.meds.push({id:id(),name,category,rating:'normal',reviews:0,lastReviewed:0}); return true;
+}
+function selectedCategory(){return $('categorySelect').value}
+function pool(){let c=selectedCategory(); return db.meds.filter(m=>c==='__all__'||m.category===c)}
+function weight(m){
+  const base={often:5,normal:2.2,rarely:.65}[m.rating]||2.2;
+  const days=m.lastReviewed?Math.min(30,(Date.now()-m.lastReviewed)/864e5):30;
+  const overdue=1+days/8; const cooldown=recent.includes(m.id)?.06:1;
+  return base*overdue*cooldown;
+}
+function choose(){let p=pool(); if(!p.length)return null; let arr=p.map(m=>[m,weight(m)]); let sum=arr.reduce((a,x)=>a+x[1],0); let r=Math.random()*sum; for(const [m,w] of arr){r-=w;if(r<=0)return m} return p[p.length-1]}
+function setCardForSelection(){
+  const all=selectedCategory()==='__all__';
+  $('contextLabel').textContent=all?'✦ ALL MEDICATIONS':'✦ '+selectedCategory().toUpperCase();
+  $('drugName').textContent=db.meds.length?'Tap randomize':'Ready when you are';
+  $('hint').textContent=db.meds.length?(all?'Only the medication name will appear. No category hints.':'Selected collection: '+selectedCategory()):'Add your medications, then tap randomize. In All Medications mode, you will only see the name — no category hints.';
+  $('ratings').classList.add('hidden'); $('emptyActions').classList.toggle('hidden',db.meds.length>0);
+}
+function next(){
+  current=choose();
+  if(!current){$('drugName').textContent=db.meds.length?'No medications in this collection':'Your library is empty'; $('hint').textContent=db.meds.length?'Choose another collection or add medications to this category.':'Tap + to add a medication or import a lesson.'; $('ratings').classList.add('hidden'); $('emptyActions').classList.remove('hidden'); return}
+  recent.push(current.id); recent=recent.slice(-Math.min(8,Math.max(2,pool().length-1)));
+  const all=selectedCategory()==='__all__';
+  $('drugName').textContent=current.name; $('hint').textContent=all?'Recall everything you know.':'Reviewing: '+current.category;
+  $('contextLabel').textContent=all?'✦ ALL MEDICATIONS':'✦ '+current.category.toUpperCase();
+  $('ratings').classList.remove('hidden'); $('emptyActions').classList.add('hidden');
+}
+function rate(r){if(!current)return; let m=db.meds.find(x=>x.id===current.id); if(!m)return; m.rating=r; m.reviews=(m.reviews||0)+1; m.lastReviewed=Date.now(); save(); next()}
+function render(){
+  const cats=[...new Set(db.meds.map(m=>m.category))].sort((a,b)=>a.localeCompare(b)); const old=$('categorySelect').value;
+  $('categorySelect').innerHTML='<option value="__all__">All medications · category hidden</option>'+cats.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+  if([...$('categorySelect').options].some(o=>o.value===old)) $('categorySelect').value=old;
+  $('stats').textContent=db.meds.length+' medication'+(db.meds.length===1?'':'s')+' · '+cats.length+' categor'+(cats.length===1?'y':'ies');
+  $('libCount').textContent=db.meds.length;
+  $('library').innerHTML=db.meds.length?db.meds.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(m=>'<div class="item"><div><div class="name">'+esc(m.name)+'</div><small>'+esc(m.category)+'</small></div><span class="tag">'+({often:'often',normal:'normal',rarely:'rare'}[m.rating]||'normal')+'</span></div>').join(''):'<div class="note">No medications yet. Add one above or import a lesson file.</div>';
+}
+function openManager(){$('manageDialog').showModal();render()}
+$('manageBtn').onclick=openManager; $('emptyAdd').onclick=openManager; $('closeDialog').onclick=()=>$('manageDialog').close();
+$('nextBtn').onclick=next; document.querySelectorAll('[data-rating]').forEach(b=>b.onclick=()=>rate(b.dataset.rating));
+$('addSingle').onclick=()=>{const ok=addMed($('singleName').value,$('singleCategory').value); $('manageStatus').textContent=ok?'Added to your library.':'That medication already exists, or the name is empty.'; if(ok){$('singleName').value=''; save()}}
+function parseCSVLine(line){let out=[],cur='',q=false;for(let i=0;i<line.length;i++){let ch=line[i];if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++}else q=!q}else if(ch===','&&!q){out.push(cur.trim());cur=''}else cur+=ch}out.push(cur.trim());return out}
+$('importFile').onchange=async e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f)return;
+  $('manageStatus').textContent='Reading '+f.name+'…';
+  try{
+    let text=(await f.text()).replace(/^\uFEFF/,'');
+    let cat=$('importCategory').value||'Uncategorized',rows=[];
+    if(f.name.toLowerCase().endsWith('.csv')){
+      let lines=text.split(/\r?\n/).filter(x=>x.trim());
+      if(lines.length){
+        let h=parseCSVLine(lines[0]).map(x=>norm(x).replace(/^\uFEFF/,''));
+        let ni=h.findIndex(x=>['name','medication','drug','arzneistoff / medikament','arzneistoff','medikament'].includes(x));
+        let ci=h.findIndex(x=>['category','kategorie','primäre lektion','primaere lektion','lesson','lektion'].includes(x));
+        if(ni<0) throw new Error('No medication-name column found.');
+        rows=lines.slice(1).map(l=>{let a=parseCSVLine(l);return[a[ni],ci>=0&&a[ci]?a[ci]:cat]});
+      }
+    } else rows=text.split(/\r?\n/).filter(x=>x.trim()).map(x=>[x,cat]);
+    let added=0,skipped=0;
+    rows.forEach(([n,c])=>addMed(n,c)?added++:skipped++);
+    save();
+    $('manageStatus').textContent='✓ Import complete: '+added+' added · '+skipped+' duplicate/empty skipped.';
+  }catch(err){
+    $('manageStatus').textContent='Could not import this file: '+(err.message||'unknown format');
+  }
+  e.target.value='';
+}
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='medibloom-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+$('restoreFile').onchange=async e=>{try{const f=e.target.files&&e.target.files[0];if(!f)return;let x=JSON.parse(await f.text());if(!Array.isArray(x.meds))throw new Error();let merged=0;x.meds.forEach(m=>{if(m&&m.name&&!db.meds.some(z=>norm(z.name)===norm(m.name))){db.meds.push({...m,id:m.id||id()});merged++}});save();$('manageStatus').textContent='Backup merged: '+merged+' new medication'+(merged===1?'':'s')+' added. Existing progress kept.'}catch(e){$('manageStatus').textContent='That backup file could not be read.'} e.target.value=''}
+$('categorySelect').onchange=()=>{current=null;setCardForSelection()}
+render();setCardForSelection();
+</script>
+</body>
+</html>
